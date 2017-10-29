@@ -713,114 +713,125 @@ function refresh() {
       },
       /*
       {
-      from:0,
-      to:6,
-      edge_width:Math.random(),
+        from:0,
+        to:6,
+        edge_width:Math.random(),
+      },
+      */
+      {
+        from: 0,
+        to: 7,
+        edge_width: Math.random(),
+      }, ]
     },
-    */
-    {
-      from: 0,
-      to: 7,
-      edge_width: Math.random(),
-    }, ]
-  },
-  "1": {
-    id: 1,
-    name: "systemB",
-    load: Math.random(),
-    confusionmatrix: [
-      [7293, 1224],
-      [7293, 1224]
-    ],
-    ref: [{
-      from: 1,
-      to: 2,
-      edge_width: Math.random(),
-    }, ]
-  },
-  "2": {
-    id: 2,
-    name: "systemC",
-    load: Math.random(),
-    confusionmatrix: [
-      [7293, 1224],
-      [7293, 1224]
-    ],
-    ref: [{
-      from: 2,
-      to: 3,
-      edge_width: Math.random(),
-    }, ]
-  },
-  "3": {
-    id: 3,
-    name: "systemD",
-    load: Math.random(),
-    confusionmatrix: [
-      [7293, 1224],
-      [7293, 1224]
-    ],
-  },
-  "4": {
-    id: 4,
-    name: "systemE",
-    load: Math.random(),
-    confusionmatrix: [
-      [7293, 1224],
-      [7293, 1224]
-    ],
-    ref: [{
-      from: 4,
-      to: 2,
-      edge_width: Math.random(),
-    }, {
-      from: 4,
-      to: 8,
-      edge_width: Math.random(),
-    }, ]
-  },
-  "5": {
-    id: 5,
-    name: "systemF",
-    load: Math.random(),
-    confusionmatrix: [
-      [7293, 1224],
-      [7293, 1224]
-    ],
-  },
-  "8": { // change 6 to 8
-    id: 8,
-    name: "systemI",
-    load: Math.random(),
-    confusionmatrix: [
-      [7293, 1224],
-      [7293, 1224]
-    ],
-    ref: [{
-      from: 8,
-      to: 7,
-      edge_width: Math.random(),
-    }, ]
-  },
-  "7": {
-    id: 7,
-    name: "systemH",
-    load: Math.random(),
-    confusionmatrix: [
-      [7293, 1224],
-      [7293, 1224]
-    ],
-    ref: [{
-      from: 7,
-      to: 3,
-      edge_width: Math.random(),
-    }, ]
-  },
-};
+    "1": {
+      id: 1,
+      name: "systemB",
+      load: Math.random(),
+      confusionmatrix: [
+        [7293, 1224],
+        [7293, 1224]
+      ],
+      ref: [{
+        from: 1,
+        to: 2,
+        edge_width: Math.random(),
+      }, ]
+    },
+    "2": {
+      id: 2,
+      name: "systemC",
+      load: Math.random(),
+      confusionmatrix: [
+        [7293, 1224],
+        [7293, 1224]
+      ],
+      ref: [{
+        from: 2,
+        to: 3,
+        edge_width: Math.random(),
+      }, ]
+    },
+    "3": {
+      id: 3,
+      name: "systemD",
+      load: Math.random(),
+      confusionmatrix: [
+        [7293, 1224],
+        [7293, 1224]
+      ],
+    },
+    "4": {
+      id: 4,
+      name: "systemE",
+      load: Math.random(),
+      confusionmatrix: [
+        [7293, 1224],
+        [7293, 1224]
+      ],
+      ref: [{
+        from: 4,
+        to: 2,
+        edge_width: Math.random(),
+      }, {
+        from: 4,
+        to: 8,
+        edge_width: Math.random(),
+      }, ]
+    },
+    "5": {
+      id: 5,
+      name: "systemF",
+      load: Math.random(),
+      confusionmatrix: [
+        [7293, 1224],
+        [7293, 1224]
+      ],
+    },
+    "8": { // change 6 to 8
+      id: 8,
+      name: "systemI",
+      load: Math.random(),
+      confusionmatrix: [
+        [7293, 1224],
+        [7293, 1224]
+      ],
+      ref: [{
+        from: 8,
+        to: 7,
+        edge_width: Math.random(),
+      }, ]
+    },
+    "7": {
+      id: 7,
+      name: "systemH",
+      load: Math.random(),
+      confusionmatrix: [
+        [7293, 1224],
+        [7293, 1224]
+      ],
+      ref: [{
+        from: 7,
+        to: 3,
+        edge_width: Math.random(),
+      }, ]
+    },
+  };
 
-myGraph.bind(data);
+  myGraph.bind(data);
+}
 
+function addMessage(message){
+  $('#moduleSelectionInfo').append('<p>' + message + '</p>');
 }
 
 var myGraph = new graph(d3); //http://d3js.org/
-init_page();
+$(document).ready(function(){
+  var socket = io('http://localhost:5000');
+
+  init_page();
+
+  socket.on('new message', function (data) {
+    addMessage(data.message);
+  });
+});
