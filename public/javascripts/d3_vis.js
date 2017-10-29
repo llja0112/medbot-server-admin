@@ -821,8 +821,10 @@ function refresh() {
   myGraph.bind(data);
 }
 
-function addMessage(message){
-  $('#moduleSelectionInfo').append('<p>' + message + '</p>');
+function changeInformation(data){
+  $('#finalOutput').html(data.message);
+  $('#selectedModule').html(data.module);
+  $('#decisionConfidence').html(data.confidence);
 }
 
 var myGraph = new graph(d3); //http://d3js.org/
@@ -832,6 +834,6 @@ $(document).ready(function(){
   init_page();
 
   socket.on('new message', function (data) {
-    addMessage(data.message);
+    changeInformation(data);
   });
 });

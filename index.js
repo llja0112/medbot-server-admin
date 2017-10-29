@@ -21,14 +21,9 @@ server.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
 
-// io.on('connection', function (socket) {
-// });
-
 sub.on('message', function (channel, message) {
   console.log(channel + ': ' + message);
-  io.emit('new message', {
-    message: message
-  });
+  io.emit('new message', JSON.parse(message));
 });
 
 sub.subscribe("message status channel");
