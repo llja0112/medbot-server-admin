@@ -22,9 +22,9 @@ function graph(d3) {
       height: 700
     },
     edge_def_width: 5,
-    edge_show_arrow: true,
-    node_draggable: true,
-    show_performance_bar: true,
+    edge_show_arrow: false,
+    node_draggable: false,
+    show_performance_bar: false,
   }
 
   var self = this;
@@ -248,10 +248,6 @@ function graph(d3) {
 
       // when path's removed
       path.exit().remove();
-
-
-
-
     }
 
 
