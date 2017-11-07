@@ -251,7 +251,7 @@ function changeInformation(data){
   myGraph.bind(transformedData);
 
   $('#selectedModuleOutput').html(data.module);
-  $('#selectionReasonOutput').html("Module is selected with " + data.confidence*100 + "% of confidence");
+  $('#selectionReasonOutput').html("Module is selected with <b>" + data.confidence*100 + "%</b> of confidence.");
   $('#botReplyOutput').html(data.message);
 }
 
