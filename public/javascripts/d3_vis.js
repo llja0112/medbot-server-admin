@@ -499,167 +499,45 @@ function graph(d3) {
 /////////function(class) Graph end////////////////
 
 function init_page(){
-  // request data here
-  var data = {
-    "0": {
-      id: 0,
-      name: "Trigger Response",
-      load: Math.random(),
-      heading: "Processes input",
-      description: "from bot user",
-      ref: [{
-        from: 0,
-        to: 1,
-        edge_width: 0.72,
-        colour: "#FFDB58"
-      }, {
-        from: 0,
-        to: 2,
-        edge_width: 0.28,
-        colour: "green"
-      }, ]
-    },
-    "1": {
-      id: 1,
-      name: "Closed Domain",
-      load: Math.random(),
-      heading: "",
-      description: "",
-      ref: [{
-        from: 1,
-        to: 3,
-        edge_width: 0.78,
-        colour: "#FFDB58"
-      }, {
-        from: 1,
-        to: 4,
-        edge_width: 0.22,
-        colour: "grey"
-      }, ]
-    },
-    "2": {
-      id: 2,
-      name: "Open Domain",
-      load: Math.random(),
-      heading: "",
-      description: "",
-      ref: [{
-        from: 2,
-        to: 8,
-        edge_width: 0.34,
-        colour: "grey"
-      }, {
-        from: 2,
-        to: 9,
-        edge_width: 0.66,
-        colour: "green"
-      }]
-    },
-    "3": {
-      id: 3,
-      name: "Retrieval",
-      load: Math.random(),
-      heading: "",
-      description: "",
-      ref: [{
-        from: 3,
-        to: 5,
-        edge_width: 0.12,
-        colour: "grey"
-      },{
-        from: 3,
-        to: 6,
-        edge_width: 0.88,
-        colour: "#FFDB58"
-      }]
-    },
-    "4": {
-      id: 4,
-      name: "Generative",
-      load: Math.random(),
-      heading: "",
-      description: "",
-      ref: [{
-        from: 4,
-        to: 7,
-        edge_width: 1.0,
-        colour: "grey"
-      }, ]
-    },
-    "5": {
-      id: 5,
-      name: "ML Classifier",
-      load: Math.random(),
-      heading: "Question Answer",
-      description: "pair",
-    },
-    "6": {
-      id: 6,
-      name: "Semantic Query",
-      load: Math.random(),
-      heading: "In-house",
-      description: "Ontology"
-    },
-    "7": {
-      id: 7,
-      name: "Seq2seq Deep Learning",
-      load: Math.random(),
-      heading: "Help Forums",
-      description: ""
-    },
-    "8": {
-      id: 8,
-      name: "Retrieval",
-      load: Math.random(),
-      heading: "",
-      description: "",
-      ref: [{
-        from: 8,
-        to: 10,
-        edge_width: 0.5,
-        colour: "grey"
-      },{
-        from: 8,
-        to: 11,
-        edge_width: 0.5,
-        colour: "grey"
-      }]
-    },
-    "9": {
-      id: 9,
-      name: "Generative",
-      load: Math.random(),
-      heading: "",
-      description: "",
-      ref: [{
-        from: 9,
-        to: 12,
-        edge_width: 1.0,
-        colour: "green"
-      }]
-    },
-    "10": {
-      id: 10,
-      name: "ML Classifier",
-      load: Math.random(),
-      heading: "Question Answer",
-      description: "Pair"
-    },
-    "11": {
-      id: 11,
-      name: "Semantic Query",
-      load: Math.random(),
-      heading: "DBPedia",
-      description: ""
-    },
-    "12": {
-      id: 12,
-      name: "Seq2seq Deep Learning",
-      load: Math.random(),
-      heading: "Movie Dialogues",
-      description: ""
-    },
-  };
+  var msgStatusData = {
+    'children':
+    [
+      {
+        'child':
+        [
+          {'name': 'STRUCTURED', 'prob': 0},
+          {'name': 'UNSTRUCTURED', 'prob': 0}
+        ],
+        'name': 'OPEN',
+        'prob': 0.33000000000000002
+      },
+      { 'child':
+        [
+          {'child':
+            [
+              {'name': 'FIXEDQA', 'prob': 0},
+              {'name': 'KNOWLEDGE', 'prob': 0}
+            ],
+            'name': 'STRUCTURED',
+            'prob': 0
+          },
+          {'child':
+            [
+              {'name': 'CLASSIFIER', 'prob': 0},
+              {'name': 'FORUM', 'prob': 0.57999999999999996}
+            ],
+            'name': 'UNSTRUCTURED',
+            'prob': 1
+          }
+        ],
+        'name': 'CLOSE',
+        'prob': 0.66999999999999993}
+    ],
+    'name': 'DOMAIN',
+    'prob': 1
+  }
+
+  var data = transformData(msgStatusData);
 
   //customize anything here
   myGraph.showTitle(function (d) {
@@ -682,145 +560,188 @@ function init_page(){
 
 }
 
+function testGraph(){
+  var msgStatusData = {
+    'children':
+    [
+      {
+        'child':
+        [
+          {'name': 'STRUCTURED', 'prob': 0},
+          {'name': 'UNSTRUCTURED', 'prob': 0}
+        ],
+        'name': 'OPEN',
+        'prob': 0.33000000000000002
+      },
+      { 'child':
+        [
+          {'child':
+            [
+              {'name': 'FIXEDQA', 'prob': 0.33333},
+              {'name': 'KNOWLEDGE', 'prob': 1}
+            ],
+            'name': 'STRUCTURED',
+            'prob': 1
+          },
+          {'child':
+            [
+              {'name': 'CLASSIFIER', 'prob': 0.2},
+              {'name': 'FORUM', 'prob': 0.57999999999999996}
+            ],
+            'name': 'UNSTRUCTURED',
+            'prob': 0
+          }
+        ],
+        'name': 'CLOSE',
+        'prob': 0}
+    ],
+    'name': 'DOMAIN',
+    'prob': 1
+  }
 
-function refresh() {
-  //request data here
+  var data = transformData(msgStatusData);
+  myGraph.bind(data);
+}
+
+function transformData(msgStatusData){
   var data = {
     "0": {
       id: 0,
-      name: "systemA",
-      load: Math.random(),
-      confusionmatrix: [
-        [7293, 1224],
-        [7293, 1224]
-      ],
+      name: msgStatusData.name,
+      heading: "Processes input",
+      description: "from bot user",
       ref: [{
         from: 0,
         to: 1,
-        edge_width: Math.random(),
+        edge_width: msgStatusData.children[0].prob,
+        colour: "#FFDB58"
       }, {
         from: 0,
-        to: 4,
-        edge_width: Math.random(),
-      }, {
-        from: 0,
-        to: 5,
-        edge_width: Math.random(),
-      },
-      /*
-      {
-        from:0,
-        to:6,
-        edge_width:Math.random(),
-      },
-      */
-      {
-        from: 0,
-        to: 7,
-        edge_width: Math.random(),
+        to: 2,
+        edge_width: msgStatusData.children[1].prob,
+        colour: "green"
       }, ]
     },
     "1": {
       id: 1,
-      name: "systemB",
-      load: Math.random(),
-      confusionmatrix: [
-        [7293, 1224],
-        [7293, 1224]
-      ],
+      name: msgStatusData.children[0].name,
+      heading: "",
+      description: "",
       ref: [{
         from: 1,
-        to: 2,
-        edge_width: Math.random(),
+        to: 3,
+        edge_width: msgStatusData.children[0].child[0].prob,
+        colour: "#FFDB58"
+      }, {
+        from: 1,
+        to: 4,
+        edge_width: msgStatusData.children[0].child[1].prob,
+        colour: "grey"
       }, ]
     },
     "2": {
       id: 2,
-      name: "systemC",
-      load: Math.random(),
-      confusionmatrix: [
-        [7293, 1224],
-        [7293, 1224]
-      ],
+      name: msgStatusData.children[1].name,
+      heading: "",
+      description: "",
       ref: [{
         from: 2,
-        to: 3,
-        edge_width: Math.random(),
-      }, ]
+        to: 5,
+        edge_width: msgStatusData.children[1].child[0].prob,
+        colour: "grey"
+      }, {
+        from: 2,
+        to: 6,
+        edge_width: msgStatusData.children[1].child[1].prob,
+        colour: "green"
+      }]
     },
     "3": {
       id: 3,
-      name: "systemD",
-      load: Math.random(),
-      confusionmatrix: [
-        [7293, 1224],
-        [7293, 1224]
-      ],
+      name: msgStatusData.children[0].child[0].name,
+      heading: "",
+      description: ""
     },
     "4": {
       id: 4,
-      name: "systemE",
-      load: Math.random(),
-      confusionmatrix: [
-        [7293, 1224],
-        [7293, 1224]
-      ],
-      ref: [{
-        from: 4,
-        to: 2,
-        edge_width: Math.random(),
-      }, {
-        from: 4,
-        to: 8,
-        edge_width: Math.random(),
-      }, ]
+      name: msgStatusData.children[0].child[1].name,
+      heading: "",
+      description: ""
     },
     "5": {
       id: 5,
-      name: "systemF",
-      load: Math.random(),
-      confusionmatrix: [
-        [7293, 1224],
-        [7293, 1224]
-      ],
-    },
-    "8": { // change 6 to 8
-      id: 8,
-      name: "systemI",
-      load: Math.random(),
-      confusionmatrix: [
-        [7293, 1224],
-        [7293, 1224]
-      ],
+      name: msgStatusData.children[1].child[0].name,
+      heading: "",
+      description: "",
       ref: [{
-        from: 8,
+        from: 5,
         to: 7,
-        edge_width: Math.random(),
-      }, ]
+        edge_width: msgStatusData.children[1].child[0].child[0].prob,
+        colour: "grey"
+      }, {
+        from: 5,
+        to: 8,
+        edge_width: msgStatusData.children[1].child[0].child[1].prob,
+        colour: "green"
+      }]
+    },
+    "6": {
+      id: 6,
+      name: msgStatusData.children[1].child[1].name,
+      heading: "",
+      description: "",
+      ref: [{
+        from: 6,
+        to: 9,
+        edge_width: msgStatusData.children[1].child[1].child[0].prob,
+        colour: "grey"
+      }, {
+        from: 6,
+        to: 10,
+        edge_width: msgStatusData.children[1].child[1].child[1].prob,
+        colour: "green"
+      }]
     },
     "7": {
       id: 7,
-      name: "systemH",
-      load: Math.random(),
-      confusionmatrix: [
-        [7293, 1224],
-        [7293, 1224]
-      ],
-      ref: [{
-        from: 7,
-        to: 3,
-        edge_width: Math.random(),
-      }, ]
+      name: msgStatusData.children[1].child[0].child[0].name,
+      heading: "",
+      description: ""
     },
-  };
-
-  myGraph.bind(data);
+    "8": {
+    id: 8,
+      name: msgStatusData.children[1].child[0].child[1].name,
+      heading: "",
+      description: ""
+    },
+    "9": {
+      id: 9,
+      name: msgStatusData.children[1].child[1].child[0].name,
+      heading: "",
+      description: ""
+    },
+    "10": {
+      id: 10,
+      name: msgStatusData.children[1].child[1].child[1].name,
+      heading: "",
+      description: ""
+    }
+  }
+  return data;
 }
 
 function changeInformation(data){
-  $('#finalOutput').html(data.message);
-  $('#selectedModule').html(data.module);
-  $('#decisionConfidence').html(data.confidence);
+  // domainTypeOutput
+  // dataRepresentationOutput
+  // botReplyOutput
+  // selectedModuleOutput
+  // selectionReasonOutput
+  var transformedData = transformData(data.msgStatusData);
+  myGraph.bind(transformedData);
+
+  $('#selectedModuleOutput').html(data.module);
+  $('#selectionReasonOutput').html(data.confidence);
+  $('#botReplyOutput').html(data.message);
 }
 
 var myGraph = new graph(d3); //http://d3js.org/
