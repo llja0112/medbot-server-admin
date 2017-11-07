@@ -462,9 +462,6 @@ function graph(d3) {
           }
         })
       }
-
-
-
     }
 
     _init();
@@ -603,6 +600,17 @@ function testGraph(){
   myGraph.bind(data);
 }
 
+function edge_colour(prob1, prob2){
+    if( prob1 > prob2 ) {
+      return "#F1C40F";
+    } else if ( prob1 == prob2 ) {
+      return "#D5D8DC";
+    } else {
+      return "#EC7063";
+    }
+}
+
+
 function transformData(msgStatusData){
   var data = {
     "0": {
@@ -614,12 +622,12 @@ function transformData(msgStatusData){
         from: 0,
         to: 1,
         edge_width: msgStatusData.children[0].prob,
-        colour: "#FFDB58"
+        colour: edge_colour(msgStatusData.children[0].prob, msgStatusData.children[1].prob)
       }, {
         from: 0,
         to: 2,
         edge_width: msgStatusData.children[1].prob,
-        colour: "green"
+        colour: edge_colour(msgStatusData.children[1].prob, msgStatusData.children[0].prob)
       }, ]
     },
     "1": {
@@ -631,12 +639,12 @@ function transformData(msgStatusData){
         from: 1,
         to: 3,
         edge_width: msgStatusData.children[0].child[0].prob,
-        colour: "#FFDB58"
+        colour: edge_colour(msgStatusData.children[0].child[0].prob, msgStatusData.children[0].child[1].prob)
       }, {
         from: 1,
         to: 4,
         edge_width: msgStatusData.children[0].child[1].prob,
-        colour: "grey"
+        colour: edge_colour(msgStatusData.children[0].child[1].prob, msgStatusData.children[0].child[0].prob)
       }, ]
     },
     "2": {
@@ -648,12 +656,12 @@ function transformData(msgStatusData){
         from: 2,
         to: 5,
         edge_width: msgStatusData.children[1].child[0].prob,
-        colour: "grey"
+        colour: edge_colour(msgStatusData.children[1].child[0].prob, msgStatusData.children[1].child[1].prob)
       }, {
         from: 2,
         to: 6,
         edge_width: msgStatusData.children[1].child[1].prob,
-        colour: "green"
+        colour: edge_colour(msgStatusData.children[1].child[1].prob, msgStatusData.children[1].child[0].prob)
       }]
     },
     "3": {
@@ -677,12 +685,12 @@ function transformData(msgStatusData){
         from: 5,
         to: 7,
         edge_width: msgStatusData.children[1].child[0].child[0].prob,
-        colour: "grey"
+        colour: edge_colour(msgStatusData.children[1].child[0].child[0].prob, msgStatusData.children[1].child[0].child[1].prob)
       }, {
         from: 5,
         to: 8,
         edge_width: msgStatusData.children[1].child[0].child[1].prob,
-        colour: "green"
+        colour: edge_colour(msgStatusData.children[1].child[0].child[1].prob, msgStatusData.children[1].child[0].child[0].prob)
       }]
     },
     "6": {
@@ -694,12 +702,12 @@ function transformData(msgStatusData){
         from: 6,
         to: 9,
         edge_width: msgStatusData.children[1].child[1].child[0].prob,
-        colour: "grey"
+        colour: edge_colour(msgStatusData.children[1].child[1].child[0].prob, msgStatusData.children[1].child[1].child[1].prob)
       }, {
         from: 6,
         to: 10,
         edge_width: msgStatusData.children[1].child[1].child[1].prob,
-        colour: "green"
+        colour: edge_colour(msgStatusData.children[1].child[1].child[1].prob, msgStatusData.children[1].child[1].child[0].prob)
       }]
     },
     "7": {
@@ -740,7 +748,7 @@ function changeInformation(data){
   myGraph.bind(transformedData);
 
   $('#selectedModuleOutput').html(data.module);
-  $('#selectionReasonOutput').html(data.confidence);
+  $('#selectionReasonOutput').html("Module is selected with " + data.confidence*100 + "% of confidence");
   $('#botReplyOutput').html(data.message);
 }
 
