@@ -241,21 +241,117 @@ function transformData(msgStatusData){
   return data;
 }
 
+function groupby(xs, key) {
+  return xs.reduce(function(rv, x) {
+    (rv[x[key]] = rv[x[key]] || []).push(x);
+    return rv;
+  }, {});
+};
+
 function changeInformation(data){
   // domainTypeOutput
   // dataRepresentationOutput
   // botReplyOutput
   // selectedModuleOutput
   // selectionReasonOutput
-  var transformedData = transformData(data.msgStatusData);
+  var transformedData = transformData(data.tree);
   myGraph.bind(transformedData);
 
-  $('#selectedModuleOutput').html(data.module);
-  $('#selectionReasonOutput').html("Module is selected with <b>" + data.confidence*100 + "%</b> of confidence.");
-  $('#botReplyOutput').html(data.message);
+  var now = new Date(Date.now());
+  var timestamp = now.toISOString().slice(0,10) + " " + now.toString().slice(16,24);
+  historicalData.push({
+    "module_name": data.module_info.module_name,
+    "timestamp": timestamp,
+    "module_confidence": data.module_info.confidence*100
+  });
+
+  $("#historicalDataTbody").prepend(
+    "<tr>" +
+      "<th scope='row'>" + historicalData.length  + "</th>" +
+      "<td>" + timestamp + "</td>" +
+      "<td>" + data.response_info.user_question + "</td>" +
+      "<td>" + data.module_info.module_name + "</td>" +
+      "<td>" + data.response_info.bot_reply + "</td>" +
+      "<td>" + Math.round(data.module_info.confidence*10000)/100 + "%</td>" +
+    "</tr>"
+  );
+
+  $('#selectedModuleOutput').html(data.module_info.module_name);
+  $('#selectionReasonOutput').html("Module is selected with <b>" + Math.round(data.module_info.confidence*10000)/100 + "%</b> of confidence.");
+  $('#userQuestionOutput').html(data.response_info.user_question);
+  $('#botReplyOutput').html(data.response_info.bot_reply);
+
+  grouped = groupby(historicalData,'module_name');
+
+  var labels = [];
+  var values = [];
+  for (var key in grouped) {
+    labels.push(key);
+    values.push(grouped[key].length);
+  }
+  pie_data[0].labels = labels;
+  pie_data[0].values = values;
+  Plotly.update('responses_summary', pie_data, pie_layout);
+
+  var x_time = [];
+  var y_confidence = [];
+  for ( i=0; i < historicalData.length; i++) {
+    x_time.push(historicalData[i].timestamp);
+    y_confidence.push(historicalData[i].module_confidence);
+  }
+  time_trace.x = x_time;
+  time_trace.y = y_confidence;
+  Plotly.update('confidences_summary', [time_trace], time_layout);
 }
 
 var myGraph = new graph(d3); //http://d3js.org/
+
+var pie_data = [{
+  values: [1, 1, 1],
+  labels: ['scripted', 'fourm', 'online' ],
+  name: 'Module selection ratio',
+  hoverinfo: 'label+percent+name',
+  hole: .5,
+  type: 'pie'
+}];
+var pie_layout = {
+  title: 'Ratio of Modules used',
+  annotations: [
+    {
+      font: {
+        size: 20
+      },
+      showarrow: false,
+      text: 'Ratio',
+      x: 0.5,
+      y: 0.5
+    }
+  ],
+  height: 500,
+  width: 500,
+  showlegend: false
+};
+
+var now = new Date( Date.now() );
+var justnow = new Date( Date.now() - 2000 );
+var time_trace = {
+  type: "scatter",
+  mode: "lines",
+  name: 'Confidences',
+  x: [justnow.toISOString().slice(0,10) + " " + justnow.toString().slice(16,24),
+      now.toISOString().slice(0,10) + " " + now.toString().slice(16,24)],
+  y: [50, 78],
+  line: {color: '#17BECF'}
+}
+var time_layout = {
+  title: 'Basic Time Series',
+  height: 500,
+  width: 500,
+  showlegend: false
+};
+
+var historicalData = []
+
 $(document).ready(function(){
   var socket = io('http://localhost:5000');
 
@@ -264,4 +360,7 @@ $(document).ready(function(){
   socket.on('new message', function (data) {
     changeInformation(data);
   });
+
+  Plotly.newPlot('responses_summary', pie_data, pie_layout);
+  Plotly.newPlot('confidences_summary', [time_trace], time_layout);
 });
