@@ -341,7 +341,8 @@ var time_trace = {
   x: [justnow.toISOString().slice(0,10) + " " + justnow.toString().slice(16,24),
       now.toISOString().slice(0,10) + " " + now.toString().slice(16,24)],
   y: [50, 78],
-  line: {color: '#17BECF'}
+  marker: {color: "#17BECF", size: 8},
+  line: {color: '#17BECF', width: 4}
 }
 var time_layout = {
   title: 'Basic Time Series',
